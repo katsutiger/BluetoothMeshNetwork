@@ -1,6 +1,7 @@
 # BluetoothMeshNetwork
 
 四つのlayout.xmlファイル：
+
 AndroidManifest.xml
 
 activity_gamen1.xml
@@ -11,7 +12,9 @@ activity_map.xml
 
 
 
+
 十一個の .javaファイル：
+
 Gamen1Activity.java
 
 Gamen2Activity.java
@@ -35,9 +38,12 @@ MeshNode.java
 Message.java
 
 
+
 それと、build.gradle.kts(Module:app):
 
+
 （以下のコードをコピーペイしたら、上のSyncを押してください。）
+
 
 plugins {
     alias(libs.plugins.android.application)
