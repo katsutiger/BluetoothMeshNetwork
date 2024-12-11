@@ -2,23 +2,36 @@
 
 四つのlayout.xmlファイル：
 AndroidManifest.xml
+
 activity_gamen1.xml
+
 activity_gamen2.xml
+
 activity_map.xml
 
 
 
 十一個の .javaファイル：
 Gamen1Activity.java
+
 Gamen2Activity.java
+
 MapActivity.java
+
 BluetoothMeshNetworkCommunicationApp.java
+
 BluetoothService.java
+
 CustomLocationView.java
+
 LocationCache.java
+
 LocationMessage.java
+
 LocationTracker.java
+
 MeshNode.java
+
 Message.java
 
 
