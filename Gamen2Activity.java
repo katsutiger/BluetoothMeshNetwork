@@ -11,12 +11,20 @@ import android.os.Looper;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.util.Log;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.content.Intent;
 import java.util.Map;
 import java.util.UUID;
-import android.content.Intent;
 
 public class Gamen2Activity extends AppCompatActivity {
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+
     private Button returnButton;
     private Button locationButton;
     private Button sendButton;
@@ -72,24 +80,34 @@ public class Gamen2Activity extends AppCompatActivity {
 
         // 位置ボタン
         locationButton.setOnClickListener(v -> {
-            // 現在位置を取得
-            Location location = locationTracker.getLastLocation();
 
-            // MapActivityへ遷移
-            Intent intent = new Intent(Gamen2Activity.this, MapActivity.class);
+            if (checkLocationPermission()) {
+                try {
+                    // MapActivityへ遷移
+                    Intent intent = new Intent(Gamen2Activity.this, MapActivity.class);
 
-            // 必要に応じて位置情報をIntentに追加
-            if (location != null) {
-                intent.putExtra("LATITUDE", location.getLatitude());
-                intent.putExtra("LONGITUDE", location.getLongitude());
+                    // 現在位置を取得
+                    Location location = locationTracker.getLastLocation();
+                    // 必要に応じて位置情報をIntentに追加
+                    if (location != null) {
+                        intent.putExtra("LATITUDE", location.getLatitude());
+                        intent.putExtra("LONGITUDE", location.getLongitude());
+                    }
+
+                    // 現在のノードIDを渡す
+                    intent.putExtra("NODE_ID", meshNode.getNodeId());
+
+                    // MapActivityを起動
+                    startActivity(intent);
+                } catch (Exception e) {
+                    Log.e("Gamen2Activity", "Error starting MapActivity", e);
+                    Toast.makeText(this, "地图启动失败，请检查应用设置", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                requestLocationPermission();
             }
-
-            // 現在のノードIDを渡す
-            intent.putExtra("NODE_ID", meshNode.getNodeId());
-
-            // MapActivityを起動
-            startActivity(intent);
         });
+
 
         // 送信ボタン
         sendButton.setOnClickListener(v -> {
@@ -123,6 +141,35 @@ public class Gamen2Activity extends AppCompatActivity {
         statusText.setText(isConnected ? "接続中" : "未接続");
         statusText.setTextColor(isConnected ?
                 Color.parseColor("#53D558") : Color.parseColor("#666666"));
+    }
+
+    private boolean checkLocationPermission() {
+        return ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestLocationPermission() {
+        ActivityCompat.requestPermissions(this,
+                new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
+                },
+                LOCATION_PERMISSION_REQUEST_CODE);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                locationButton.performClick();
+            } else {
+                Toast.makeText(this, "位置情報の権限が必要です", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     @Override
