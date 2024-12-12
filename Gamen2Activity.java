@@ -67,27 +67,31 @@ public class Gamen2Activity extends AppCompatActivity {
     }
 
     private void setupButtonListeners() {
+        // 戻るボタン
         returnButton.setOnClickListener(v -> finish());
 
+        // 位置ボタン
         locationButton.setOnClickListener(v -> {
+            // 現在位置を取得
             Location location = locationTracker.getLastLocation();
+
+            // MapActivityへ遷移
+            Intent intent = new Intent(Gamen2Activity.this, MapActivity.class);
+
+            // 必要に応じて位置情報をIntentに追加
             if (location != null) {
-                // Create location message string
-                String locationMessage = String.format("現在地: %.6f, %.6f",
-                        location.getLatitude(),
-                        location.getLongitude());
-
-                // Start MapActivity
-                Intent intent = new Intent(Gamen2Activity.this, MapActivity.class);
-                intent.putExtra("LOCATION_LAT", location.getLatitude());
-                intent.putExtra("LOCATION_LNG", location.getLongitude());
-                startActivity(intent);
-
-                // Set the location message in the input field
-                messageInput.setText(locationMessage);
+                intent.putExtra("LATITUDE", location.getLatitude());
+                intent.putExtra("LONGITUDE", location.getLongitude());
             }
+
+            // 現在のノードIDを渡す
+            intent.putExtra("NODE_ID", meshNode.getNodeId());
+
+            // MapActivityを起動
+            startActivity(intent);
         });
 
+        // 送信ボタン
         sendButton.setOnClickListener(v -> {
             String messageText = messageInput.getText().toString();
             if (!messageText.isEmpty()) {
