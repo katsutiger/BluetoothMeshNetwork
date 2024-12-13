@@ -60,11 +60,11 @@
 
     <com.example.androidtraining.CustomLocationView
         android:id="@+id/locationView"
-        android:layout_width="match_parent"
+        android:layout_width="326dp"
         android:layout_height="200dp"
         android:layout_margin="16dp"
         android:background="#FFFFFF"
-        android:importantForAccessibility="yes"
-        android:contentDescription="位置情報表示ビュー" />
+        android:contentDescription="位置情報表示ビュー"
+        android:importantForAccessibility="yes" />
 
 </LinearLayout>
