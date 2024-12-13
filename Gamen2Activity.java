@@ -24,6 +24,7 @@ import java.util.UUID;
 
 public class Gamen2Activity extends AppCompatActivity {
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1001;
+    private static final String TAG = "Gamen2Activity";
 
     private Button returnButton;
     private Button locationButton;
@@ -80,9 +81,22 @@ public class Gamen2Activity extends AppCompatActivity {
 
         // 位置ボタン
         locationButton.setOnClickListener(v -> {
+            Log.d(TAG, "Location button clicked");
 
-            if (checkLocationPermission()) {
+            if (!checkLocationPermission()) {
+                Log.d(TAG, "Location permission not granted, requesting...");
+                requestLocationPermission();
+                return;
+            }
+
                 try {
+                    if (!isActivityRegistered("com.example.androidtraining.MapActivity")) {
+                        Log.e(TAG, "MapActivity is not registered in AndroidManifest.xml");
+                        Toast.makeText(this, "地図画面の設定が不正です", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    Log.d(TAG, "Creating intent for MapActivity");
                     // MapActivityへ遷移
                     Intent intent = new Intent(Gamen2Activity.this, MapActivity.class);
 
@@ -90,22 +104,23 @@ public class Gamen2Activity extends AppCompatActivity {
                     Location location = locationTracker.getLastLocation();
                     // 必要に応じて位置情報をIntentに追加
                     if (location != null) {
+                        Log.d(TAG, "Location found: " + location.getLatitude() + ", " + location.getLongitude());
                         intent.putExtra("LATITUDE", location.getLatitude());
                         intent.putExtra("LONGITUDE", location.getLongitude());
+                    }else {
+                        Log.d(TAG, "No location available");
                     }
 
                     // 現在のノードIDを渡す
                     intent.putExtra("NODE_ID", meshNode.getNodeId());
+                    Log.d(TAG, "Starting MapActivity");
 
                     // MapActivityを起動
                     startActivity(intent);
                 } catch (Exception e) {
-                    Log.e("Gamen2Activity", "Error starting MapActivity", e);
-                    Toast.makeText(this, "地图启动失败，请检查应用设置", Toast.LENGTH_SHORT).show();
+                    Log.e(TAG, "Error starting MapActivity", e);
+                    Toast.makeText(this, "地図画面の起動に失敗しました: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 }
-            } else {
-                requestLocationPermission();
-            }
         });
 
 
@@ -120,6 +135,15 @@ public class Gamen2Activity extends AppCompatActivity {
                 appendMessage("自分", messageText);
             }
         });
+    }
+
+    private boolean isActivityRegistered(String activityName) {
+        try {
+            Class.forName(activityName);
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
     }
 
     private void setupMessageListener() {
