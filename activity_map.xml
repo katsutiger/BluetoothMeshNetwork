@@ -21,7 +21,7 @@
         android:layout_margin="16dp"
         android:text="現在位置"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/mapReturnButton"
@@ -29,7 +29,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="戻る"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
