@@ -41,7 +41,7 @@ Message.java
 ③それと、build.gradle.kts(Module:app):
 
 
-（以下のコードをコピーペイしたら、上のSyncを押してください。）
+（以下のコードをコピーペイしたら、上のSync Nowを押してください。）
 
 
 plugins {
