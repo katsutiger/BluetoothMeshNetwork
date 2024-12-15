@@ -33,7 +33,14 @@
 
         <activity
             android:name=".MapActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:label="地图"
+            android:parentActivityName=".Gamen2Activity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Gamen2Activity" />
+        </activity>
+
         <activity
             android:name=".Gamen2Activity"
             android:exported="false" />
