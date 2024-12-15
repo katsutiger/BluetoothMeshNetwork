@@ -1,6 +1,7 @@
 package com.example.androidtraining;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -8,15 +9,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.widget.Button;
-
 import android.util.Log;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
-
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -28,10 +25,8 @@ import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.Polyline;
-import com.google.android.gms.maps.model.PolylineOptions;
-
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 public class MapActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -41,14 +36,14 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
     private static final int LOCATION_UPDATE_INTERVAL = 1000; // 1 second
 
     private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
     private MeshNode meshNode;
     private LocationTracker locationTracker;
     private Handler updateHandler;
     private Map<String, Marker> userMarkers;
     private Circle rangeCircle;
-    private Button centerButton;
     private boolean isFirstLocationUpdate = true;
+    private Marker selectedLocationMarker;
+    private LatLng selectedLocation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +54,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             setContentView(R.layout.activity_map);
 
             // Initialize components
-            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
             updateHandler = new Handler(Looper.getMainLooper());
             userMarkers = new HashMap<>();
 
@@ -90,8 +84,9 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
 
     private void initializeUI() {
         try {
-            centerButton = findViewById(R.id.centerButton);
-            centerButton.setOnClickListener(v -> centerOnMyLocation());
+            Button shareButton = findViewById(R.id.centerButton);
+            shareButton.setText("位置共有");
+            shareButton.setOnClickListener(v -> shareLocation());
 
             Button returnButton = findViewById(R.id.mapReturnButton);
             returnButton.setOnClickListener(v -> finish());
@@ -99,6 +94,40 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
             Log.e(TAG, "Error initializing UI", e);
         }
     }
+
+    private void shareLocation() {
+        try {
+            String locationMessage;
+            if (selectedLocation != null) {
+                // 選択したロケーションを共有
+                locationMessage = String.format(Locale.getDefault(),
+                        "選択した位置: %.6f, %.6f",
+                        selectedLocation.latitude,
+                        selectedLocation.longitude);
+            } else {
+                // 現在位置を共有
+                Location location = locationTracker.getLastLocation();
+                if (location != null) {
+                    locationMessage = String.format(Locale.getDefault(),
+                            "現在位置: %.6f, %.6f",
+                            location.getLatitude(),
+                            location.getLongitude());
+                } else {
+                    Toast.makeText(this, "位置情報を取得できません", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("LOCATION_MESSAGE", locationMessage);
+            setResult(RESULT_OK, resultIntent);
+            finish();
+        } catch (Exception e) {
+            Log.e(TAG, "Error sharing location", e);
+            Toast.makeText(this, "位置情報の共有に失敗しました", Toast.LENGTH_SHORT).show();
+        }
+    }
+
 
     private void checkPermissionsAndInitializeMap() {
         Log.d(TAG, "Checking permissions");
@@ -150,7 +179,6 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
         try {
             mMap = googleMap;
 
-            // 基本设置
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             if (ActivityCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -159,11 +187,11 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                 mMap.getUiSettings().setCompassEnabled(true);
             }
 
-            // 设置默认位置（比如东京）
+            mMap.setOnMapClickListener(this::handleMapClick);
+
             LatLng defaultLocation = new LatLng(35.6762, 139.6503);
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, DEFAULT_ZOOM));
 
-            // 在地图准备好之后再开始其他操作
             setupMap();
             startLocationUpdates();
         } catch (Exception e) {
@@ -173,6 +201,25 @@ public class MapActivity extends FragmentActivity implements OnMapReadyCallback 
                         Toast.LENGTH_SHORT).show();
             });
         }
+    }
+
+    private void handleMapClick(LatLng latLng) {
+
+        selectedLocation = latLng;
+
+
+        if (selectedLocationMarker != null) {
+            selectedLocationMarker.remove();
+        }
+
+
+        selectedLocationMarker = mMap.addMarker(new MarkerOptions()
+                .position(latLng)
+                .title("選択した位置")
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)));
+
+
+        Toast.makeText(this, "位置が選択されました", Toast.LENGTH_SHORT).show();
     }
 
     private void setupMap() {
