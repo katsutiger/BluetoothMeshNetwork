@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Gamen1Activity">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:text="ニアリンク"
+        android:textSize="30sp"
+        android:background="#76C878"
+        android:textColor="#FFFFFF"
+        android:gravity="center"
+        android:importantForAccessibility="yes"
+        android:contentDescription="アプリケーションタイトル">
+    </TextView>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="50dp"
+        android:text="まわりの人"
+        android:textColor="#2B6F2E"
+        android:textSize="35sp"
+        android:importantForAccessibility="yes"
+        android:contentDescription="近くのユーザーセクション">
+    </TextView>
+
+    <TextView
+        android:id="@+id/broadcastText"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:layout_marginLeft="18dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="18dp"
+        android:background="#E2F5E2"
+        android:padding="8dp"
+        android:textColor="#000000"
+        android:textSize="16sp">
+    </TextView>
+
+    <Button
+        android:id="@+id/chatButton"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:text="チャット"
+        android:textSize="25sp"
+        android:backgroundTint="#76C878"
+        android:textColor="#FFFFFF"
+        style="@style/Widget.AppCompat.Button">
+    </Button>
+
+    <com.example.nearlink.CustomLocationView
+        android:id="@+id/locationView"
+        android:layout_width="326dp"
+        android:layout_height="200dp"
+        android:layout_margin="16dp"
+        android:background="#FFFFFF"
+        android:contentDescription="位置情報表示ビュー"
+        android:importantForAccessibility="yes" />
+
+</LinearLayout>

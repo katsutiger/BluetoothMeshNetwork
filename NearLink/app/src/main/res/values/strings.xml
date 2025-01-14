@@ -1,0 +1,38 @@
+<resources>
+<string name="app_name">NearLink</string>
+<string name="sub_title">サブ画面タイトル</string>
+<string name="sub_title1">サブ画面タイトル</string>
+<string name="hint">名前を入力してください</string>
+<string name="drink_check">ドリンク</string>
+<string name="food_check">フード</string>
+<string name="confirm">確認</string>
+<string name="sendButton">送信</string>
+<string name="clearButton">クリア</string>
+<string name="editText">名前を入力してください</string>
+<string name="editText2">パスワードは数値で入力してください</string>
+<string name="dai1">10代</string>
+<string name="dai2">２０代</string>
+<string name="dai3">３０代</string>
+<string name="age">年代</string>
+<string name="gender">男</string>
+<string name="age2">女</string>
+<string name="gender0">性別</string>
+<string name="clearbutton1">クリア</string>
+<string name="clearbutton">クリア</string>
+<string name="confirmButton">確認</string>
+<string name="clearButton2">クリア</string>
+<string name="radioMale">男</string>
+<string name="radioFemale">女</string>
+<string name="add">データ追加</string>
+<string name="addHint">データを入力してください</string>
+<string name="a" />
+<string name="save">保存</string>
+<string name="cancel">キャンセル</string>
+<string name="seac" />
+<string name="search">検索</string>
+<string name="camera">カメラ起動</string>
+<string-array name="curryList">
+    <item>ドライカレー</item>
+    <item>カツカレー</item>
+</string-array>
+</resources>
